@@ -1,0 +1,27 @@
+.project_content {
+  font-family: sans-serif;
+}
+
+.project_content h1{
+  margin-top: 20px;
+}
+
+.project_content h2 {
+  font-size: 22px;
+  color: #ffaa00;
+  border-bottom-style: solid;
+}
+
+.project_content p {
+  padding-top: 10px;
+  font-size: 18px;
+}
+
+.project_content img {
+  margin-top: 9px;
+  width: 50%;
+}
+
+#space_bottom {
+  margin-bottom: 10px;
+}
