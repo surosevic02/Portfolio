@@ -1,0 +1,1 @@
+These are the Java files to my Android Studio Projects, these will not run on their own without my android studio files!

@@ -1,0 +1,54 @@
+Phase 1
+1.
+The menu options that the user will be given are as followed.
+	1. Add New CTA Station
+	2. Modify Existing Station
+	3. Remove CTA Station
+	4. Search for a Station
+		1. Search for Station by Name
+		2. Search for Station by Wheel Chair Access
+		3. Search for Station by Longitude and Latitude
+	5. Find path between two stations
+	6. Exit
+	
+The user will use the application on a text base basis, in which the user inputs a basic command, like a number or a string
+and the program will run code and return text in which the user can understand.
+
+2.
+* The input file will be read by a scanner in which the individual elements of the input file will be separated by a comma.
+* The input file will be processed in on the bases that each stop will become an array in which the first element is stop name,
+the next element is latitude, then longitude, description, wheel chair accessibility, and finally the different lines it serves
+(stop number may be included).
+* The data would be stored in an array that contains all the elements of a given stop, furthermore this data could be saved at the users request.
+* The program will likely use an arrayList that contains all the different stops, that way it becomes easier to edit and modify the data.
+* The search functionality for this program will depend either on Longitude/Latitude, Name, or Accessibility. This could be
+accomplished by creating a search engine in which all the data is stored, the sorted according to the users needs. This could
+be done through the arrayList functions, whether it's stop number or a specific element a user is looking for.
+* CLASSES - The classes I know I'll use now
+ + Stops
+ + Lines
+ + Search Engine
+ + File Manager
+ + Application
+
+3. UML will be in project folder
+
+4. Testing
+	For any of these function if the user inputs an invalid options, the program will prompt the user to try again as the input isn't valid.
+
+	1. For testing this part, I expect to type in 1, then get prompted to enter all the details required for the stop. afterwards
+	I expect the information to be added in the Array.
+	2. For testing this part, I expect to type in 2, then get a search function in which I can search the the stop I wish to modify by name, then I
+	input the information for the stop, then read the stop to the array. If no stop is found with the criteria the user specified, then the program
+	will notify the user that nothing was found and loop back to the main menu.
+	3. For testing I expect to input 3, then be prompted which stop they would like to be removed, in which the user has can input the station name
+	then afterwards the stop would be removed from the Array. If no stop is found with the criteria the user specified, then the program
+	will notify the user that nothing was found and loop back to the main menu.
+	4. For this function I expect to input 4, Then the I will be prompted to search either, by name, location, or access.
+	After inputting this I plan to receive the station that I had in question. If no stop is found with the criteria the user specified, then the program
+	will notify the user that nothing was found and loop back to the main menu.
+	5. For testing I expect to input 5, then I expect to be prompted with a prompt asking me for a destination and origin,
+	then after returning the path to take I expect the program to return a prompt asking if I want to save the path as a text file,
+	in which I can say yes to get the file or no to skip. If the origin and destination isn't valid, the program should notify the user and loop back to the menu.
+	6. For testing purposes, I will enter the number 6, I then expect the program to return program successfully exited.
+	I then expect the program to stop looping and for the red square to turn gray.
