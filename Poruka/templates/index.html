@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block extrastyle %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}"/>
+{% endblock %}
+{% block content %}
+
+<form method="post">
+    <div class="login" id="login-div">
+        <h3>Login In</h3>
+        <input type="text" placeholder="Username" name="user" value="{{user}}"/><br>
+        <input type="password" placeholder="Password" name="code" value="{{code}}"/><br>
+        <button type="submit" name="join">Join</button><br>
+    </div>
+
+    <div class="invitecode" id="register-div">
+        <h3>Register</h3>
+        <input type="text" placeholder="Invitecode" name="invitecode" value="{{invcode}}"/><br>
+        <button type="submit" name="register">Register</button><br>
+    </div>
+    {% if error %}
+    <h3 id="errorMsg">{{error}}</h3>
+    {% endif %}
+</form>
+{% endblock %}

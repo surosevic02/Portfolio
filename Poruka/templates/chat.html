@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block extrastyle %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/chatroom.css')}}"/>
+{% endblock %}
+{% block content %}
+
+<div class="interface" id="ui">
+    <div class="privatemessage"></div>
+
+    <div class="messagebox">
+        <div class="online" id="online">
+            <h2 id="onlinetext">_</h2>
+            <a href="#" onclick="openInv()">+</a>
+        </div>
+
+        <div class="messages" id="messages">
+
+        </div>
+
+        <div class="inputs">
+            <textarea type="text" placeholder="Send message" name="usermsg" id="usermsg"></textarea>
+        </div>
+
+    </div>
+</div>
+
+<div class="invitebox" id="invite">
+    <h2>Invite Link:</h2>
+    <p id="linkBox" onclick="copyText()"></p>
+    <div class="invbuttons">
+        <button onclick="copyText()">Copy</button>
+        <a href="#" onclick="closeInv()">Close</a>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    const inv = document.getElementById('invite')
+    const blur = document.getElementById('ui')
+    const linkBox = document.getElementById('linkBox')
+    const onlinetxt = document.getElementById("onlinetext");
+    const messages = document.getElementById("messages");
+    const umsg = document.getElementById("usermsg");
+
+    function copyText() {
+        navigator.clipboard.writeText(linkBox.innerText)
+    }
+
+    function closeInv() {
+        blur.classList.toggle('active')
+        inv.classList.toggle('active')
+    }
+
+    var socketio = io();
+
+    // Get inv link
+    const openInv = () => {
+        blur.classList.toggle('active')
+        inv.classList.toggle('active')
+        socketio.emit("invite");
+    }
+
+    const showInv = (link) => { 
+        linkBox.innerText = link
+    }; 
+
+    const createMessage = (name, msg, color) => {
+        const content = `
+        <div class="text">
+            <div class=idttxt>
+                <div class=imgtxt style="background-color: rgb${color};">${name.charAt(0)}</div>
+                <div class=usertxt>${name}</div>
+            </div>
+            <div class=msgtxt style="background-color: rgb${color};">${msg}</div>
+        </div>
+        `;
+
+        messages.innerHTML += content;
+    };
+
+    const createServerMessage = (msg, online) => {
+        const content = `
+        <div class="server">
+            <span>
+                -- ${msg}
+            </span>
+        </div>
+        `;
+
+        messages.innerHTML += content
+        onlinetxt.innerHTML = online + " online";
+    };
+
+    socketio.on("message", (data) => {
+        if (data.name === "server") {
+            createServerMessage(data.message, data.online);
+        } else if (data.name === "link"){
+            showInv(data.invite)
+        } else {
+            createMessage(data.name, data.message, data.color);
+        }
+    });
+
+    const sendMessage = () => {
+        if (umsg.value == "") return;
+        socketio.emit("message", {data: umsg.value });
+        umsg.value = "";
+    };
+
+    umsg.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+</script>
+{% endblock %}
