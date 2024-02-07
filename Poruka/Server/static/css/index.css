@@ -1,0 +1,67 @@
+* {font-family: Arial, sans-serif;}
+
+#full-div {
+    display: flex;
+    flex-direction: column;
+}
+
+#content-div {
+    margin: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    position: relative;
+}
+
+#welcome-div {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    margin-right: 2%;
+}
+
+#login-div {
+    padding: 5px;
+    border: 2px;
+    border-style: solid;
+    border-color: gray;
+    margin-bottom: 5%;
+}
+
+#register-div {
+    margin-top: 5px;
+    padding: 5px;
+    border: 2px;
+    border-style: solid;
+    border-color: gray;
+}
+
+#messages {
+    padding-top: 2%;
+    text-align: right;
+}
+
+h1 {
+    font-size: 40px;
+}
+
+input {
+    padding: 5px;
+    border-style: solid;
+    margin-bottom: 10px;
+}
+
+button:active {
+    border-color: rgb(49, 0, 88);
+    background-color: rgb(49, 0, 88);
+}
+
+button {
+    padding: 5px;
+    color: white;
+    width: 100%;
+    background-color: rgb(90, 0, 164);
+    border-color: rgb(90, 0, 164);
+    border-style: solid;
+    cursor: pointer;
+}

@@ -1,0 +1,483 @@
+{% extends 'base.html' %}
+{% block extrastyle %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/chatroom.css')}}"/>
+{% endblock %}
+{% block content %}
+<div class="interface" id="ui">
+    <div class="homebackground">
+        <button id="pc-0" class="homebutton privbuttondown" value="msg-0" onclick="toggleChats(this.id, this.value)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M64 0C28.7 0 0 28.7 0 64V352c0 35.3 28.7 64 64 64h96v80c0 6.1 3.4 11.6 8.8 14.3s11.9 2.1 16.8-1.5L309.3 416H448c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64z"/></svg></button>
+        <div id="privMsgMenu" class="privatemessage">
+        </div>
+    </div>
+
+    <div class="messagebox">
+        <div class="online" id="online">
+            <h3 id="chatheader">Public Chat</h3>
+
+            {% if admin %}
+            <link rel="stylesheet" href="{{url_for('static', filename='css/admin.css')}}"/>
+            <div id="admindrop">
+                <button onclick="adminMenu()" id="adminButton"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M176 88v40H336V88c0-4.4-3.6-8-8-8H184c-4.4 0-8 3.6-8 8zm-48 40V88c0-30.9 25.1-56 56-56H328c30.9 0 56 25.1 56 56v40h28.1c12.7 0 24.9 5.1 33.9 14.1l51.9 51.9c9 9 14.1 21.2 14.1 33.9V304H384V288c0-17.7-14.3-32-32-32s-32 14.3-32 32v16H192V288c0-17.7-14.3-32-32-32s-32 14.3-32 32v16H0V227.9c0-12.7 5.1-24.9 14.1-33.9l51.9-51.9c9-9 21.2-14.1 33.9-14.1H128zM0 416V336H128v16c0 17.7 14.3 32 32 32s32-14.3 32-32V336H320v16c0 17.7 14.3 32 32 32s32-14.3 32-32V336H512v80c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64z"/></svg></button>
+                <div class="menuAdmin" id="adminmenu" style="display: none;">
+                    <h3 id="adminpaneltitle">Admin Panel</h3>
+
+                    <div id="adminmenuusers">
+                        <h3>Users</h3>
+                        <div id="usersregisterd"></div>
+                        <h3>Banned</h3>
+                        <div id="usersbanned"></div>
+                    </div>
+
+                    <button onclick="purgeInvites()">Clear Invites</button>
+                    <button onclick="banUnban()">Ban / Unban</button>
+                    <button id="purgebutton" onclick="purgePrivateChats()">Purge Chats</button>
+                </div>
+            </div>
+            {% endif %}
+
+            <div id="dropdown">
+                <button onclick="peopleMenu()" id="onlineButton">_</button>
+                <div class="people" id="people" style="display: none;">
+                    <h3>Online</h3>
+                    <div id="usersinchat"></div>
+                    <button onclick="createChat()">Chat</button>
+                </div>
+            </div>
+            <button onclick="openInv()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM504 312V248H440c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V136c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H552v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/></svg></button>
+        </div>
+        
+        <div class="messages" id="messages">
+            <div class="chatsclass" id="msg-0" style="display: block;"></div>
+        </div>
+
+        <div class="inputs">
+            <textarea type="text" placeholder="Send message" name="usermsg" id="usermsg"></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="invitebox" id="invite">
+    <h2>Invite Link</h2>
+    <p id="linkBox"> </p>
+    <div class="invbuttons">
+        <button id="invcopy" onclick="copyText()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/></svg></button>
+        <button id="invgen" onclick="genLink()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg></button>
+        <button id="invclose" onclick="closeInv()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    // Constants
+    const inv = document.getElementById('invite') // Invite div
+    const blur = document.getElementById('ui') // UI
+    const linkBox = document.getElementById('linkBox') // P containing invite link
+    const umsg = document.getElementById("usermsg"); // Textbox for messages
+    const onlineButton = document.getElementById("onlineButton"); // Button for online usage
+    const people = document.getElementById("people") // Menu for viewing individual users
+    const uinchat = document.getElementById("usersinchat"); // Div for getting users in chat
+    const multiChat = document.getElementById("messages") // Div for where the public and private chat goes
+    const toggleButtons = document.getElementById("privMsgMenu") // Div for storing the toggle buttons
+    const chatHeader = document.getElementById("chatheader") // Header for displaying the chat name
+    const bannedInfo = document.getElementById("bandiv") // Div banned notification
+
+    // Variables
+    var socketio = io(); // Socket variable
+    var currentPrivMsgID = "msg-0"; // Which private chat the user is currently on
+    var currentPrivMsgBT = "pc-0"; // Which private chat button is toggled
+
+    // Notify the users that a message has been recieved
+    function notifyChat(chat) {
+        if (currentPrivMsgID !== chat) {
+            var id = chat.charAt(chat.length-1);
+            document.getElementById("pc-"+id).style.backgroundColor = "orange";
+        }
+    }
+
+    // Toggle between private chats
+    // WARNING!: It's possible to end up with a scenario in which 
+    // the function can set the user to toggle one button
+    // and end up on another chat, this needs to be fixed
+    function toggleChats(id, val) {
+        // This part of the function will first untoggle the
+        // old buttonthen it will toggle the new one 
+        if (id !== currentPrivMsgBT) {
+            // If the previous button exists and un-toggle it
+            var prevBT = document.getElementById(currentPrivMsgBT);
+            if (prevBT) {
+                prevBT.classList.toggle('privbuttondown');
+            }
+            
+            // Check if the current button exists and toggle it
+            // If it doesn't then default to the home button
+            var currBT = document.getElementById(id);
+            if (currBT) {
+                currentPrivMsgBT = id;
+                currBT.classList.toggle('privbuttondown');
+                currBT.style.removeProperty("background-color");
+
+            } else {
+                currentPrivMsgBT = "pc-0";
+                document.getElementById("pc-0").classList.toggle('privbuttondown');
+            }
+        }
+
+        // This portion of the function will open the correct
+        // Group chat so the user can see and set the current
+        // group chat
+        if (val !== currentPrivMsgID) {
+            // Check if prev element exists and hide it
+            var prev = document.getElementById(currentPrivMsgID); 
+            if (prev) {
+                prev.style.display = "none";
+            }
+            
+            // Check if the current element exists and show it
+            // and change the current ID If the new one doesn't
+            // exist default to public chat
+            var curr = document.getElementById(val);
+            if (curr) {
+                curr.style.display = "block";
+                currentPrivMsgID = val;
+            
+            } else {
+                document.getElementById("msg-0").style.display = "block";
+                currentPrivMsgID = "msg-0";
+            }
+            
+            if (currentPrivMsgID === "msg-0") {
+                chatHeader.innerHTML = "Public Chat";
+
+            } else {
+                chatHeader.innerHTML = "Private Chat " + currentPrivMsgID.charAt(currentPrivMsgID.length-1);
+            }
+        }
+    }
+
+    // Open people drop down menu
+    function peopleMenu() {
+        if (people.style.display === "none") {
+            people.style.display = "flex";
+        } else {
+            people.style.display = "none";
+        }
+    }
+
+    // Create a chat room with selected users
+    function createChat() {
+        var checkboxes = uinchat.querySelectorAll('input[type="checkbox"]:checked');
+        var checkedVals = Array.prototype.slice.call(checkboxes);
+        var checkedOne = checkedVals.some(x => x.checked);
+        
+        if (checkedOne) {
+            var newChat = [];
+            for (let i = 0; i < checkedVals.length; i++) {
+                newChat.push(checkedVals[i].value);
+            }
+            socketio.emit("newchat", {data:newChat});
+            peopleMenu();
+        }
+    }
+
+    // Copy code from invite menu
+    function copyText() {
+        navigator.clipboard.writeText(linkBox.innerText)
+    }
+
+    // Close the invite menu
+    function closeInv() {
+        blur.classList.toggle('active')
+        inv.classList.toggle('active')
+    }
+
+    // Open the invite menu
+    const openInv = () => {
+        blur.classList.toggle('active')
+        inv.classList.toggle('active')
+    }
+
+    // Generate the invite link
+    const genLink = () => {
+        socketio.emit("invite");
+    }
+
+    // Show the invite link
+    const showInv = (link) => { 
+        linkBox.innerText = link
+    }; 
+
+    // Add users to people menu
+    const addPeopleMenu = (name) => {
+        const disp = name;
+        if (name.length > 10) {
+            disp = name.subString(0, 10) + "..";
+        }
+
+        const u = `
+                <div id="${"cm-"+name}">
+                    <input class="checkmark" type="checkbox" id="${"cb-"+name}" name="${name}" value="${name}">
+                    <label class="checkmark" for="${"cb-"+name}">${disp}</label><br>
+                </div>`;
+        uinchat.innerHTML += u;
+    }
+
+    // Initialize people menu
+    const initPeopleMenu = (au) => {
+        for (let i = 0; i < au.length; i++) {
+            addPeopleMenu(au[i]);
+        }
+    }
+
+    // Create use message with coloring and message content
+    const createMessage = (name, msg, color, chat) => {
+        var parsed = ``
+
+        for (let i = 0; i < msg.length; i++) {
+            if (msg[i][0] == 'p') {
+                parsed += msg[i][1]
+
+            } else {
+                parsed += `<a href="${msg[i][1]}" target="_blank" rel="noreferrer">${msg[i][1]}</a>`;
+            }
+        }
+
+        const content = `
+        <div class="text">
+            <div class=idttxt>
+                <div class=imgtxt style="background-color: rgb${color};">${name.charAt(0)}</div>
+                <div class=usertxt>${name}</div>
+            </div>
+            <div class=msgtxt style="background-color: rgb${color};">${parsed}</div>
+        </div>
+        `;
+
+        // Add notification bubble if chat isn't being viewed
+        if (chat !== currentPrivMsgID) {
+            notifyChat(chat)
+        }
+
+        // Add messages to the correct chat then scroll
+        var elem = document.getElementById(chat)
+        elem.innerHTML += content
+        scrollBottom(elem);
+    };
+
+    // Update online count
+    const updateOnlineCount = (online) => {
+        onlineButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/></svg> ` + online;
+    }
+
+    // Procedure for someone joining
+    const joinProcedure = (name, chat) => {
+        createServerMessage(name + " has entered the chat", chat);
+        addPeopleMenu(name);
+    }
+
+    // Procedure for someone disconnecting
+    const disconectProcedure = (name, chat) => {
+        createServerMessage(name + " has left the chat", chat);
+        const u = document.getElementById("cm-"+name);
+        uinchat.removeChild(u);
+    }
+
+    // Create server message update for users
+    const createServerMessage = (msg, chat) => {
+        const content = `
+        <div class="server">
+            <span>
+                -- ${msg}
+            </span>
+        </div>
+        `;
+
+        // Add notification bubble if chat isn't being viewed
+        if (chat !== currentPrivMsgID) {
+            notifyChat(chat);
+        }
+
+        // Add messages to the correct chat then scroll
+        let elem = document.getElementById(chat)
+        elem.innerHTML += content
+        scrollBottom(elem);
+    };
+
+    // Function to scroll to bottom of messages div
+    const scrollBottom = (elem) => {
+        elem.scrollTop = elem.scrollHeight;
+    }
+
+    // Function to create toggle button and chat div then update session data
+    const createPrivChat = (chatNum, chat, creator) => {
+        const toggleButton = `
+            <button id="pc-${chatNum}" class="privbutton" value="msg-${chatNum}" onclick="toggleChats(this.id, this.value)">${chatNum}</button>
+        `;
+
+        const newMsgChat = `
+            <div class="chatsclass" id="${chat}" style="display: none;"></div>
+        `;
+
+        toggleButtons.innerHTML += toggleButton;
+        multiChat.innerHTML += newMsgChat;
+    }
+
+    // This is the function to delete the private chat
+    // This function will most likely only be triggered
+    // by an admin
+    const deletePrivChat = (chatNum, chat) => {
+        toggleChats("pc-0", "msg-0");
+
+        const toggleButton = document.getElementById("pc-"+chatNum);
+        const newMsgChat = document.getElementById(chat);
+
+        newMsgChat.innerHTML = ''
+
+        toggleButtons.removeChild (toggleButton);
+        newMsgChat.removeChild (newMsgChat);
+    }
+
+    // Message event handler
+    socketio.on("message", (data) => {
+        switch(data.name) {
+            case "server":
+                createServerMessage(data.message, data.chat);
+                break;
+            case "link":
+                showInv(data.invite)
+                break;
+            case "connect":
+                joinProcedure(data.uname, data.chat);
+                updateOnlineCount(data.online);
+                break;
+            case "disconnect":
+                disconectProcedure(data.uname, data.chat);
+                updateOnlineCount(data.online);
+                break;
+            case "activeuser":
+                initPeopleMenu(data.au);
+                updateOnlineCount(data.online);
+                break;
+            case "newchat":
+                createPrivChat(data.rmnum, data.rmname, data.creator);
+                break;
+            case "delchat":
+                deletePrivChat(data.chatnum, data.chatname);
+                break;
+            case "message":
+                createMessage(data.user, data.message, data.color, data.chat);
+                break;
+            default:
+                break;
+        }
+    });
+
+    // Send a message to the room
+    const sendMessage = () => {
+        if (umsg.value == "") return;
+        socketio.emit("message", {room: currentPrivMsgID, data: umsg.value});
+        umsg.value = "";
+    };
+
+    // If enter then send message
+    umsg.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+</script>
+
+{% if admin %}
+<script type="text/javascript">
+    // Admin only variables
+    // LINK TWO VARIABLES ==========================================================================================================
+    const adminmenu = document.getElementById("adminmenu"); // Div for admin menu
+    const usersregisterd = document.getElementById("usersregisterd") // Divthat contains the list of users not banned
+    const bannedusers = document.getElementById("usersbanned") // Div that contains the list of banned users
+    const adminmenuusers = document.getElementById("adminmenuusers") // Div that contains list of banned and unbanned users
+
+    // function for opening and closing the admin menu
+    function adminMenu() {
+        if (adminmenu.style.display === "none") {
+            socketio.emit("getuserstat");
+            adminmenu.style.display = "flex";
+        } else {
+            adminmenu.style.display = "none";
+        }
+    }
+
+    // Ban or unban selected users
+    // First getting the list of users to have banned/unbanned
+    // Then update the list on the admins end
+    function banUnban() {
+        var checkboxes = adminmenuusers.querySelectorAll('input[type="checkbox"]:checked');
+        var checkedVals = Array.prototype.slice.call(checkboxes);
+        var checkedOne = checkedVals.some(x => x.checked);
+        
+        if (checkedOne) {
+            for (let i = 0; i < checkedVals.length; i++) {
+                if (checkedVals[i].value === "reg") {
+                    socketio.emit("ban", checkedVals[i].name);
+                    var e = document.getElementById("user-"+checkedVals[i].name);
+                    usersregisterd.removeChild(e);
+                    addToMenu(checkedVals[i].name, bannedusers, "ban");
+                    continue;
+                }
+
+                if (checkedVals[i].value === "ban") {
+                    socketio.emit("unban", checkedVals[i].name);
+                    var e = document.getElementById("user-"+checkedVals[i].name);
+                    bannedusers.removeChild(e);
+                    addToMenu(checkedVals[i].name, usersregisterd, "reg");
+                    continue;
+                }
+            }
+        }
+    }
+
+    // Clear all active invites
+    function purgeInvites() {
+        socketio.emit("purgeinvites");
+    }
+
+    // Purge all private chats
+    function purgePrivateChats() {
+        socketio.emit("purgechats");
+    }
+
+    // Add users to admin menu
+    const addToMenu = (name, elem, stat) => {
+        const disp = name;
+        if (name.length > 10) {
+            disp = name.subString(0, 10) + "..";
+        }
+
+        const u = `
+                <div id="${"user-"+name}">
+                    <input class="checkmark" type="checkbox" id="${"cb-"+name}" name="${name}" value="${stat}">
+                    <label class="checkmark" for="${"cb-"+name}">${disp}</label><br>
+                </div>`;
+        elem.innerHTML += u;
+    }
+
+    // Message event handler
+    socketio.on("message", (data) => {
+        switch(data.name) {
+            case "userbanstat":
+                // Remove all users then update the list
+                usersregisterd.innerHTML = '';
+                bannedusers.innerHTML = '';
+                for (let i = 0; i < data.unbanned.length; i++) {
+                    addToMenu(data.unbanned[i], usersregisterd, "reg");
+                }
+
+                for (let j = 0; j < data.banned.length; j++) {
+                    addToMenu(data.banned[j], bannedusers, "ban");
+                }
+                break;
+            default:
+                break;
+        }
+    });
+
+</script>
+{% endif %}
+{% endblock %}

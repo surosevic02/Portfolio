@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block extrastyle %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/register.css')}}"/>
+{% endblock %}
+{% block content %}
+
+<div id="full-div">
+    <div id="passreq">
+        <h2>Password Requirements</h2>
+        <ul>
+            <li>Password may not be shorter than 8 characters</li>
+            <li>Password may not be longer than 32 characters</li>
+            <li>Password cannot contain any spaces</li>
+        </ul>
+    </div>
+    <div id="content-div">
+        <!--INCLUDE PASSWORD REQUIREMENTS!-->
+        <form method="post">
+            <div class="register" id="register-div">
+                <h3>Create Account</h3>
+                <input type="text" name="username" placeholder="Username" value="{{uname}}"/><br>
+                <input type="password" name="passcode" placeholder="Password" value="{{pcode}}"/><br>
+                <input type="password" name="cpasscode" placeholder="Confirm Password" value="{{cpcode}}"/><br>
+                <button type="submit" name="create">Submit</button><br>
+            </div>
+        </form>
+        {% if error %}
+        <h3 id="errorMsg">{{error}}</h3>
+        {% endif %}
+    
+        {% if msg %}
+        <h3 id="regularMsg">{{msg}}</h3>
+        <a href="/">Go to Login</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

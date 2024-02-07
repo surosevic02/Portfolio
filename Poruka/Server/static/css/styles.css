@@ -1,0 +1,22 @@
+*{padding:0; margin: 0}
+
+:root {
+    --main-bgcolor: rgb(25, 25, 25);
+    --main-textcolor: white;
+}
+
+html {
+    background-color: var(--main-bgcolor);
+    color: var(--main-textcolor)
+}
+
+#errorMsg {
+    padding-top: 5px;
+    color: red;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
