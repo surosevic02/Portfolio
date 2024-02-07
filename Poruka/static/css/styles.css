@@ -1,0 +1,28 @@
+*{padding:0; margin: 0}
+
+:root {
+    --main-bgcolor: white;
+    --main-textcolor: black;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --main-bgcolor: rgb(25, 25, 25);
+        --main-textcolor: white;
+    }
+}
+
+html {
+    background-color: var(--main-bgcolor);
+    color: var(--main-textcolor)
+}
+
+#errorMsg {
+    color: red;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
