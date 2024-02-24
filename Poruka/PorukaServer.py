@@ -95,6 +95,10 @@ maxPrivateChats = configurations['MAX'].getint('privatechats', fallback=20) # Ma
 regCodeLen = configurations['SECURITY'].getint('registerkeylen', fallback=10) # Length of the register link/code that is generated
 adminKeyLen = configurations['SECURITY'].getint('adminkeylen', fallback=20) # Length of the admin key
 
+# This will cause an infinite loop if it's bigger than 100
+if maxUsers > 100:
+    maxUsers = 100
+
 # Data structures and variables for server operation
 d = None # Json dictionary containing account details
 chats = {"msg-0" : 0} # Chat rooms that are active (msg-0) is the public chat room by default
@@ -207,6 +211,11 @@ def register(inv):
         temp = set()
         for k in d:
             temp.add(d[k][1])
+
+        # Too many users in the server
+        if len(temp) >= maxUsers:
+            logEvent("Max users reached")
+            return render_template('register.html', msg="", error="Max users reached", uname=username, pcode="", cpcode="")
 
         color = None
         while color in temp or not color:
