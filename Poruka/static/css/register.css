@@ -1,0 +1,70 @@
+* {font-family: Arial, sans-serif;}
+
+#content-div {
+    width: fit-content;
+    margin: auto;
+}
+
+#register-div {
+    margin: auto;
+    width: min-content;
+    padding: 5px;
+    border: 2px;
+    border-style: solid;
+    border-color: gray;
+}
+
+#regularMsg {
+    padding-top: 5px;
+    color: green;
+}
+
+#full-div {
+    display: flex;
+    flex-direction: row;
+}
+
+#passreq {
+    text-align: left;
+    width: max-content;
+    padding-right: 20px;
+}
+
+#passreq ul {
+    margin-left: 20px;
+}
+
+h3 {
+    text-align: center;
+    padding-bottom: 6px;
+}
+
+button:active {
+    border-color: rgb(49, 0, 88);
+    background-color: rgb(49, 0, 88);;
+}
+
+button {
+    padding: 5px;
+    color: white;
+    width: 100%;
+    background-color: rgb(90, 0, 164);
+    border-color: rgb(90, 0, 164);
+    border-style: solid;
+    cursor: pointer;
+}
+
+input {
+    width: auto;
+    padding: 5px;
+    border-style: solid;
+    margin-bottom: 10px;
+}
+
+a {
+    display: block;
+    background-color: green;
+    padding: 5px;
+    color: white;
+    text-align: center;
+}
